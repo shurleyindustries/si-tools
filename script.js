@@ -20,8 +20,17 @@ function parsePriceFromText(text) {
 
 async function searchEstimatedPrice(itemName) {
   const query = encodeURIComponent(`${itemName} price`);
-  const url = `https://api.duckduckgo.com/?q=${query}&format=json&no_redirect=1&no_html=1`;
-  const response = await fetch(url);
+  const ddgUrl = `https://api.duckduckgo.com/?q=${query}&format=json&no_redirect=1&no_html=1`;
+  let response;
+  try {
+    response = await fetch(ddgUrl);
+  } catch {
+    response = null;
+  }
+  if (!response || !response.ok) {
+    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(ddgUrl)}`;
+    response = await fetch(proxyUrl);
+  }
   if (!response.ok) throw new Error("Search unavailable");
   const data = await response.json();
   const textCandidates = [
@@ -257,7 +266,7 @@ function renderSummary() {
         <tr><th>Possession</th><th>Condition</th><th>Value (USD)</th></tr>
       </thead>
       <tbody>
-        ${tracker.items.map((item) => `<tr><td>${item.name}</td><td>${item.condition}</td><td>${item.value.toFixed(2)}</td></tr>`).join("")}
+        ${tracker.items.map((item) => `<tr><td>${escapeHtml(item.name)}</td><td>${escapeHtml(item.condition)}</td><td>${item.value.toFixed(2)}</td></tr>`).join("")}
       </tbody>
     </table>
   `;
@@ -298,15 +307,24 @@ function downloadCsv() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `${tracker.ownerName || "si"}-possessions.xlsx.csv`;
+  a.download = `${tracker.ownerName || "si"}-possessions.csv`;
   a.click();
   URL.revokeObjectURL(url);
+}
+
+function escapeHtml(text) {
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 function exportSummaryPdf() {
   const stats = getSummaryStats();
   const summaryRows = tracker.items
-    .map((item) => `<tr><td>${item.name}</td><td>${item.condition}</td><td>${item.value.toFixed(2)}</td></tr>`)
+    .map((item) => `<tr><td>${escapeHtml(item.name)}</td><td>${escapeHtml(item.condition)}</td><td>${item.value.toFixed(2)}</td></tr>`)
     .join("");
   const html = `
     <!doctype html>
@@ -340,8 +358,10 @@ function exportSummaryPdf() {
   win.document.open();
   win.document.write(html);
   win.document.close();
-  win.focus();
-  win.print();
+  win.onload = () => {
+    win.focus();
+    win.print();
+  };
 }
 
 document.querySelectorAll(".tab-button").forEach((button) => {
