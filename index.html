@@ -64,6 +64,11 @@
           <button id="add-item">Add Possession</button>
           <button id="finish-items">Finish & View Summary</button>
         </div>
+        <label class="checkbox-label">
+          <input id="allow-proxy-search" type="checkbox">
+          Allow fallback via allorigins.win (sends item names to that third-party proxy)
+        </label>
+        <p class="hint">Price autofill queries DuckDuckGo with the possession name you enter.</p>
         <p id="tracker-message" class="result" aria-live="polite"></p>
         <ul id="item-list"></ul>
       </div>
@@ -73,7 +78,7 @@
         <div id="summary-content"></div>
         <div class="row">
           <button id="refresh-unimportant-estimate">Refresh Unimportant Sale Estimate (Web Search)</button>
-          <button id="download-csv">Download 3-Column Excel Sheet</button>
+          <button id="download-csv">Download 3-Column CSV (Excel Compatible)</button>
           <button id="export-pdf">Export Summary PDF</button>
           <button id="add-more">Add More Possessions</button>
         </div>

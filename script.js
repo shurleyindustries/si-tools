@@ -3,7 +3,7 @@ const byId = (id) => document.getElementById(id);
 const tracker = {
   ownerName: "",
   items: [],
-  unimportantSaleEstimate: 0
+  unimportantSaleEstimate: null
 };
 
 function formatCurrency(value) {
@@ -27,11 +27,15 @@ async function searchEstimatedPrice(itemName) {
   } catch {
     response = null;
   }
-  if (!response || !response.ok) {
+  if ((!response || !response.ok) && byId("allow-proxy-search")?.checked) {
     const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(ddgUrl)}`;
-    response = await fetch(proxyUrl);
+    try {
+      response = await fetch(proxyUrl);
+    } catch {
+      response = null;
+    }
   }
-  if (!response.ok) throw new Error("Search unavailable");
+  if (!response || !response.ok) throw new Error("Search unavailable");
   const data = await response.json();
   const textCandidates = [
     data.AbstractText,
@@ -203,7 +207,7 @@ function evaluateMathExpression(expression, xValue = 0) {
       throw new Error("Invalid expression");
     }
   }
-  if (valueStack.length !== 1 || !Number.isFinite(valueStack[0])) return null;
+  if (valueStack.length !== 1) return null;
   return valueStack[0];
 }
 
@@ -253,7 +257,7 @@ function getSummaryStats() {
 function renderSummary() {
   const summary = byId("summary-content");
   const stats = getSummaryStats();
-  if (tracker.unimportantSaleEstimate === 0) {
+  if (tracker.unimportantSaleEstimate === null) {
     tracker.unimportantSaleEstimate = stats.unimportantValue;
   }
   summary.innerHTML = `
@@ -303,7 +307,7 @@ function downloadCsv() {
     ...tracker.items.map((item) => [item.name, item.condition, item.value.toFixed(2)])
   ];
   const csv = rows.map((row) => row.map((cell) => `"${String(cell).replace(/"/g, "\"\"")}"`).join(",")).join("\n");
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const blob = new Blob([`\uFEFF${csv}`], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
@@ -323,45 +327,43 @@ function escapeHtml(text) {
 
 function exportSummaryPdf() {
   const stats = getSummaryStats();
+  const estimateValue = tracker.unimportantSaleEstimate === null ? stats.unimportantValue : tracker.unimportantSaleEstimate;
+  const safeOwnerName = escapeHtml(tracker.ownerName || "User");
   const summaryRows = tracker.items
     .map((item) => `<tr><td>${escapeHtml(item.name)}</td><td>${escapeHtml(item.condition)}</td><td>${item.value.toFixed(2)}</td></tr>`)
     .join("");
-  const html = `
-    <!doctype html>
-    <html>
-      <head>
-        <title>SIPT Summary</title>
-        <style>
-          body { font-family: Arial, sans-serif; color: #10223d; padding: 20px; }
-          h1 { border-bottom: 2px solid #10223d; padding-bottom: 8px; }
-          table { width: 100%; border-collapse: collapse; margin-top: 16px; }
-          th, td { border: 1px solid #8ea8d9; padding: 8px; text-align: left; }
-          th { background: #e9eff9; }
-        </style>
-      </head>
-      <body>
-        <h1>SI Possession Tracker Summary - ${tracker.ownerName || "User"}</h1>
-        <p>Total possessions: ${stats.totalCount} (${formatCurrency(stats.totalValue)})</p>
-        <p>Important possessions: ${stats.importantCount} (${formatCurrency(stats.importantValue)})</p>
-        <p>Unimportant possessions: ${stats.unimportantCount} (${formatCurrency(stats.unimportantValue)})</p>
-        <p>Estimated sale value of unimportant possessions: ${formatCurrency(tracker.unimportantSaleEstimate)}</p>
-        <table>
-          <thead><tr><th>Possession</th><th>Condition</th><th>Value (USD)</th></tr></thead>
-          <tbody>${summaryRows}</tbody>
-        </table>
-      </body>
-    </html>
-  `;
 
   const win = window.open("", "_blank");
   if (!win) return;
-  win.document.open();
-  win.document.write(html);
-  win.document.close();
-  win.onload = () => {
+  win.document.title = "SIPT Summary";
+  const style = win.document.createElement("style");
+  style.textContent = `
+    body { font-family: Arial, sans-serif; color: #10223d; padding: 20px; }
+    h1 { border-bottom: 2px solid #10223d; padding-bottom: 8px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+    th, td { border: 1px solid #8ea8d9; padding: 8px; text-align: left; }
+    th { background: #e9eff9; }
+  `;
+  win.document.head.appendChild(style);
+
+  const container = win.document.createElement("div");
+  container.innerHTML = `
+    <h1>SI Possession Tracker Summary - ${safeOwnerName}</h1>
+    <p>Total possessions: ${stats.totalCount} (${formatCurrency(stats.totalValue)})</p>
+    <p>Important possessions: ${stats.importantCount} (${formatCurrency(stats.importantValue)})</p>
+    <p>Unimportant possessions: ${stats.unimportantCount} (${formatCurrency(stats.unimportantValue)})</p>
+    <p>Estimated sale value of unimportant possessions: ${formatCurrency(estimateValue)}</p>
+    <table>
+      <thead><tr><th>Possession</th><th>Condition</th><th>Value (USD)</th></tr></thead>
+      <tbody>${summaryRows}</tbody>
+    </table>
+  `;
+  win.document.body.innerHTML = "";
+  win.document.body.appendChild(container);
+  window.setTimeout(() => {
     win.focus();
     win.print();
-  };
+  }, 250);
 }
 
 document.querySelectorAll(".tab-button").forEach((button) => {
@@ -377,7 +379,7 @@ byId("calc-evaluate").addEventListener("click", () => {
   }
   try {
     const result = evaluateMathExpression(expression, 0);
-    resultNode.textContent = result === null ? "Invalid numeric result." : `Result: ${result}`;
+    resultNode.textContent = result === null || Number.isNaN(result) ? "Invalid numeric result." : `Result: ${result}`;
   } catch {
     resultNode.textContent = "Invalid expression.";
   }
@@ -415,7 +417,7 @@ byId("graph-draw").addEventListener("click", () => {
     } catch {
       y = null;
     }
-    if (y === null) {
+    if (y === null || !Number.isFinite(y)) {
       started = false;
       continue;
     }
@@ -474,7 +476,7 @@ byId("add-item").addEventListener("click", () => {
   }
 
   tracker.items.push({ name, condition, buyPrice, value, important });
-  tracker.unimportantSaleEstimate = 0;
+  tracker.unimportantSaleEstimate = null;
   renderItems();
 
   byId("item-name").value = "";
@@ -491,6 +493,7 @@ byId("finish-items").addEventListener("click", () => {
     message.textContent = "Add at least one possession.";
     return;
   }
+  tracker.unimportantSaleEstimate = null;
   renderSummary();
   setTrackerStep("tracker-step-summary");
 });
