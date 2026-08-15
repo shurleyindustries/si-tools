@@ -370,6 +370,22 @@ document.querySelectorAll(".tab-button").forEach((button) => {
   button.addEventListener("click", () => setActiveTab(button.dataset.tab));
 });
 
+function bindEnterToClick(inputId, buttonId) {
+  const input = byId(inputId);
+  const button = byId(buttonId);
+  if (!input || !button) return;
+
+  input.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      button.click();
+    }
+  });
+}
+
+bindEnterToClick("calc-expression", "calc-evaluate");
+bindEnterToClick("graph-expression", "graph-draw");
+
 byId("calc-evaluate").addEventListener("click", () => {
   const expression = byId("calc-expression").value.trim();
   const resultNode = byId("calc-result");
