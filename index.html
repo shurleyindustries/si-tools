@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SI Tools</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <h1>SI Tools</h1>
+    <p>Calculator, Graphing Calculator, and SI Possession Tracker</p>
+  </header>
+
+  <nav class="tabs" aria-label="Tools">
+    <button class="tab-button active" data-tab="calculator">Calculator</button>
+    <button class="tab-button" data-tab="graphing">Graphing Calculator</button>
+    <button class="tab-button" data-tab="tracker">SI Possession Tracker</button>
+  </nav>
+
+  <main>
+    <section id="calculator" class="tab-panel active">
+      <h2>Calculator</h2>
+      <label for="calc-expression">Expression</label>
+      <div class="row">
+        <input id="calc-expression" type="text" placeholder="e.g. (25 * 4) + 8 / 2">
+        <button id="calc-evaluate">Calculate</button>
+      </div>
+      <p id="calc-result" class="result" aria-live="polite"></p>
+    </section>
+
+    <section id="graphing" class="tab-panel">
+      <h2>Graphing Calculator</h2>
+      <label for="graph-expression">f(x) =</label>
+      <div class="row">
+        <input id="graph-expression" type="text" value="sin(x)">
+        <button id="graph-draw">Draw</button>
+      </div>
+      <canvas id="graph-canvas" width="720" height="360" aria-label="Graph canvas"></canvas>
+      <p class="hint">Use math syntax. Example: <code>sin(x) * 4</code>, <code>x^2 / 10</code></p>
+    </section>
+
+    <section id="tracker" class="tab-panel">
+      <h2>SI Possession Tracker</h2>
+      <div id="tracker-step-name" class="tracker-step active">
+        <label for="owner-name">What's your first name?</label>
+        <div class="row">
+          <input id="owner-name" type="text" placeholder="First name">
+          <button id="start-tracker">Start</button>
+        </div>
+      </div>
+
+      <div id="tracker-step-possessions" class="tracker-step">
+        <h3>Add Possessions</h3>
+        <div class="grid">
+          <label>What is it?<input id="item-name" type="text" placeholder="Item name"></label>
+          <label>What is the condition?<input id="item-condition" type="text" placeholder="Condition"></label>
+          <label>How much did you buy it for?<input id="item-buy-price" type="number" min="0" step="0.01" placeholder="0.00"></label>
+          <label>Put a $ value on it<input id="item-value" type="number" min="0" step="0.01" placeholder="0.00"></label>
+          <label class="checkbox-label"><input id="item-important" type="checkbox"> Mark as important</label>
+        </div>
+        <div class="row">
+          <button id="autofill-value">Autofill Value (Web Search)</button>
+          <button id="add-item">Add Possession</button>
+          <button id="finish-items">Finish & View Summary</button>
+        </div>
+        <label class="checkbox-label">
+          <input id="allow-proxy-search" type="checkbox">
+          Allow fallback via allorigins.win (sends item names to that third-party proxy)
+        </label>
+        <p class="hint">Price autofill queries DuckDuckGo with the possession name you enter.</p>
+        <p id="tracker-message" class="result" aria-live="polite"></p>
+        <ul id="item-list"></ul>
+      </div>
+
+      <div id="tracker-step-summary" class="tracker-step">
+        <h3 id="summary-title">Summary</h3>
+        <div id="summary-content"></div>
+        <div class="row">
+          <button id="refresh-unimportant-estimate">Refresh Unimportant Sale Estimate (Web Search)</button>
+          <button id="download-csv">Download 3-Column CSV (Excel Compatible)</button>
+          <button id="export-pdf">Export Summary PDF</button>
+          <button id="add-more">Add More Possessions</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./script.js"></script>
+</body>
+</html>
