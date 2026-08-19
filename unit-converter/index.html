@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Converter | SI Tools</title>
+    <link rel="stylesheet" href="./style.css">
+  </head>
+  <body>
+    <header class="tool-header">
+      <nav class="top-nav" aria-label="Main navigation">
+        <a href="../index.html">← Back to SI Tools</a>
+      </nav>
+      <h1>Unit Converter</h1>
+    </header>
+
+    <main class="tool-card">
+      <div class="field-group">
+        <label for="category">Category</label>
+        <select id="category" aria-label="Select conversion category"></select>
+      </div>
+
+      <div class="field-grid">
+        <div class="field-group">
+          <label for="from-unit">From Unit</label>
+          <select id="from-unit" aria-label="Select source unit"></select>
+        </div>
+        <div class="field-group">
+          <label for="to-unit">To Unit</label>
+          <select id="to-unit" aria-label="Select destination unit"></select>
+        </div>
+      </div>
+
+      <div class="field-grid">
+        <div class="field-group">
+          <label for="input-value">Value</label>
+          <input id="input-value" type="number" step="any" value="1" aria-label="Input value to convert" />
+        </div>
+        <div class="field-group">
+          <label for="result-value">Converted Value</label>
+          <input id="result-value" type="text" readonly aria-label="Converted value output">
+        </div>
+      </div>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

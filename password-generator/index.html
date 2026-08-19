@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Generator | SI Tools</title>
+    <link rel="stylesheet" href="./style.css">
+  </head>
+  <body>
+    <header class="tool-header">
+      <nav class="top-nav" aria-label="Main navigation">
+        <a href="../index.html">← Back to SI Tools</a>
+      </nav>
+      <h1>Password / Passphrase Generator</h1>
+    </header>
+
+    <main class="tool-card">
+      <div class="field-group">
+        <label for="password-length">Length</label>
+        <div class="range-wrap">
+          <input id="password-length" type="range" min="6" max="64" value="16" aria-label="Password length">
+          <input id="password-length-number" type="number" min="6" max="64" value="16" aria-label="Password length number">
+        </div>
+      </div>
+
+      <div class="checkbox-grid">
+        <label class="checkbox-label"><input id="include-uppercase" type="checkbox" checked> Include uppercase</label>
+        <label class="checkbox-label"><input id="include-numbers" type="checkbox" checked> Include numbers</label>
+        <label class="checkbox-label"><input id="include-symbols" type="checkbox"> Include symbols</label>
+      </div>
+
+      <div class="button-row">
+        <button id="generate-password">Generate</button>
+        <button id="copy-password" class="secondary">Copy</button>
+      </div>
+
+      <div class="field-group result-box">
+        <label for="password-output">Generated password</label>
+        <input id="password-output" type="text" readonly aria-label="Generated password output">
+      </div>
+
+      <p id="password-status" class="status" aria-live="polite"></p>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
