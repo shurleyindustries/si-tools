@@ -1,3 +1,14 @@
+:root {
+  --bg: #0b1220;
+  --panel: #111827;
+  --panel-alt: #1a2437;
+  --border: #2d3f57;
+  --text: #edf3ff;
+  --muted: #cbd5e1;
+  --accent: #ff8c00;
+  --accent-hover: #ff9d2e;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -5,14 +16,15 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #f4f7fb;
-  color: #10223d;
+  background: var(--bg);
+  color: var(--text);
 }
 
 .tool-header {
-  background: #10223d;
+  background: #0a0f18;
   color: #fff;
   padding: 1rem 1.5rem 1.5rem;
+  border-bottom: 1px solid var(--border);
 }
 
 .top-nav {
@@ -20,7 +32,7 @@ body {
 }
 
 .top-nav a {
-  color: #dfeafc;
+  color: var(--accent);
   text-decoration: none;
   font-weight: 600;
 }
@@ -32,11 +44,11 @@ body {
 .tool-card {
   max-width: 760px;
   margin: 1.5rem auto;
-  background: #fff;
-  border: 1px solid #d6e0f3;
+  background: var(--panel);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 1.25rem;
-  box-shadow: 0 2px 10px rgba(16, 34, 61, 0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 }
 
 .field-group {
@@ -52,10 +64,11 @@ label {
 input {
   width: 100%;
   padding: 0.7rem 0.75rem;
-  border: 1px solid #b2c4e5;
+  border: 1px solid var(--border);
   border-radius: 8px;
   font-size: 1rem;
-  color: #10223d;
+  color: var(--text);
+  background: var(--panel-alt);
 }
 
 .button-row {
@@ -70,9 +83,9 @@ input {
 }
 
 button {
-  border: 1px solid #10223d;
-  background: #10223d;
-  color: #fff;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #111827;
   border-radius: 8px;
   padding: 0.65rem 1rem;
   cursor: pointer;
@@ -80,16 +93,18 @@ button {
 }
 
 button:hover {
-  background: #18345d;
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
 }
 
 button.secondary {
-  background: #fff;
-  color: #10223d;
+  background: var(--panel-alt);
+  color: var(--text);
+  border-color: var(--border);
 }
 
 button.secondary:hover {
-  background: #eef4ff;
+  background: #243247;
 }
 
 .qr-wrapper {
@@ -97,7 +112,7 @@ button.secondary:hover {
   justify-content: center;
   margin: 1.5rem 0 1rem;
   background: #fff;
-  border: 1px solid #d6e0f3;
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 1rem;
 }
@@ -111,5 +126,5 @@ canvas {
 .status {
   min-height: 1.4rem;
   margin: 0;
-  color: #2e476f;
+  color: var(--muted);
 }

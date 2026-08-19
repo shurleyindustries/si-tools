@@ -9,7 +9,7 @@ Tools website for Shurley Industries, deployed to GitHub Pages at `tools.shurley
 - SI Possession Tracker (SIPT)
 - Unit Converter
 - Password / Passphrase Generator
-- QR Code Generator
+- QR Code™ Generator
 
 ## Navigation
 

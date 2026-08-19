@@ -83,14 +83,14 @@ function generateQrCode() {
 
   const matrix = buildMatrix(value);
   drawQrCode(matrix);
-  statusText.textContent = 'QR code generated successfully.';
+  statusText.textContent = 'QR Code™ generated successfully.';
 }
 
 function downloadQrCode() {
   const value = qrInput.value.trim();
 
   if (!value) {
-    statusText.textContent = 'Generate a QR code before downloading.';
+    statusText.textContent = 'Generate a QR Code™ before downloading.';
     return;
   }
 
@@ -98,7 +98,7 @@ function downloadQrCode() {
   link.download = 'qr-code.jpg';
   link.href = qrCanvas.toDataURL('image/jpeg', 0.92);
   link.click();
-  statusText.textContent = 'QR code downloaded as qr-code.jpg';
+  statusText.textContent = 'QR Code™ downloaded as qr-code.jpg';
 }
 
 document.getElementById('generate-qr').addEventListener('click', generateQrCode);
