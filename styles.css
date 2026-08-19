@@ -19,6 +19,34 @@ body {
   margin: 0 0 0.25rem;
 }
 
+.tool-links {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  padding: 1rem;
+  max-width: 900px;
+}
+
+.tool-card-link {
+  display: block;
+  background: #fff;
+  border: 1px solid #d6e0f3;
+  border-radius: 10px;
+  padding: 1rem;
+  color: #10223d;
+  text-decoration: none;
+  box-shadow: 0 1px 4px rgba(16, 34, 61, 0.04);
+}
+
+.tool-card-link h3 {
+  margin: 0 0 0.25rem;
+}
+
+.tool-card-link p {
+  margin: 0;
+  color: #2e476f;
+}
+
 .tabs {
   display: flex;
   gap: 0.5rem;
